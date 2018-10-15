@@ -1,0 +1,59 @@
+Bootstrap: docker
+
+From: fedora:28
+
+%files
+
+    build.sh /build.sh
+    mkl_silent.cfg /mkl_silent.cfg
+
+    # These two will be removed when able to clone from git repos
+    /afs/crc.nd.edu/user/c/ckankel/singularity/cswarm/cswarm/gitlab/pgfem_3d /pgfem_3d
+    /afs/crc.nd.edu/user/c/ckankel/singularity/cswarm/cswarm/gitlab/Generalizsed_constitutive_model /gcm
+
+%environment
+
+    INTEL_MKL=l_mkl_2018.2.199.tgz
+    SUITESPARSE=SuiteSparse-4.2.2.tar.gz
+    HYPRE=hypre-2.11.2.tar.gz
+
+%post
+
+    yum -y install curl openmpi openmpi-devel git paraview cmake cpio libXaw gcc autoconf dh-autoreconf pkgconf gcc-c++ glibc glibc-devel
+
+    # Fixing shortcomings of Fedora's openmpi-devel package
+    ln -s /usr/lib64/openmpi/bin/mpicc /usr/bin/mpicc
+    ln -s /usr/lib64/openmpi/bin/mpicxx /usr/bin/mpicxx
+
+    export INTEL_MKL=l_mkl_2018.2.199.tgz
+    export SUITESPARSE=SuiteSparse-4.5.5.tar.gz
+    export HYPRE=hypre-2.11.2.tar.gz
+    
+    # Obtaining necessary software
+    curl -O http://kanar.open.sice.indiana.edu/images/$INTEL_MKL
+    curl -O http://faculty.cse.tamu.edu/davis/SuiteSparse/$SUITESPARSE
+    curl -O https://computation.llnl.gov/projects/hypre-scalable-linear-solvers-multigrid-methods/download/$HYPRE
+
+    git clone -b develop https://github.com/C-SWARM/ttl.git
+    #git clone -b develop https://github.com/C-SWARM/gcm.git
+    #git clone -b develop https://github.com/C-SWARM/pgfem_3d.git
+    #git clone -b develop https://github.com/C-SWARM/pgfem-3d-examples.git
+
+    # Installing intel MKL
+    tar -xf $INTEL_MKL
+    ${INTEL_MKL%.*}/install.sh -s ./mkl_silent.cfg
+
+    # Building software components and PGFem3D
+    bash /build.sh
+
+    rm $SUITESPARSE $INTEL_MKL $HYPRE mkl_silent.cfg build.sh
+
+%runscript
+
+    exec /pgfem_3d/deploy/bin/PGFem3D "$@"
+
+%labels
+
+    Maintainer Cody Kankel <ckankel@nd.edu>
+
+    Version 1.0
