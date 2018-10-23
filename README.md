@@ -11,13 +11,16 @@ This repo contains the build scripts necessary in order build a deployable singu
 ## Installation / Creation
 
 Clone this directory.
-```bash $ git clone https://github.com/C-SWARM/pgfem_3d-singularity.git
+```bash 
+# Note this is pre-release, so the following link will NOT work!
+$ git clone https://github.com/C-SWARM/pgfem_3d-singularity.git
 $ cd pgfem_3d-singularity/
 ```
 Build the container using the build command as super user / root. This can take 10-20 minutes depending on machine specs.
 ```console
-$ su
+$ su -
 Password:
+# cd /path/to/this/repo
 # singularity build pgfem3d.simg pgfem3d.build
 ```
 Once finished building, the container can be executed to run PGFem_3D, passing in any necessary parameters.
@@ -41,7 +44,8 @@ OPTION_BLK: -[scale]-start [options] input output -[scale]-end
 
 ## Running pgfem-3d-examples
 
-Singularity can utilize the native machine's file system, allowing the following commands to be performed outside the container.
+Singularity can utilize the native machine's file system, allowing the following commands to be performed outside the container
+on the machine targeted to run on. Be sure to transfer the container to this machine in order to use it.
 
 
 Clone the examples to obtain the source:
