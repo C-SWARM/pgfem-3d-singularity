@@ -55,7 +55,7 @@ echo " ================== "
 tar -xf $PHOTON
 cd /${PHOTON%.tar.bz2}
 ./autogen.sh
-./configure --disable-libfabric \
+./configure --enable-mpi \
             --disable-shmem \
             CXXFLAGS="-O3"
 make -j 4
@@ -76,7 +76,7 @@ cd /pgfem_3d
 	    --with-cnstvm=$PREFIX/gcm \
 	    --enable-tests \
 	    --with-tests-nprocs=4 \
-	    CC=mpicc CXX=mpicxx CXXFLAGS="-O3" \
+	    CC=mpicc CXX=mpicxx CXXFLAGS="-O3 -Wno-uninitialized" \
             PKG_CONFIG_PATH=/usr/local/lib/pkgconfig
 
 make -j 4
