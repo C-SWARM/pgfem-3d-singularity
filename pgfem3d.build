@@ -8,8 +8,8 @@ From: fedora:28
     mkl_silent.cfg /mkl_silent.cfg
 
     # These two will be removed when able to clone from git repos
-    /afs/crc.nd.edu/user/e/ekissel/repos/pgfem_3d_client /pgfem_3d
-    /afs/crc.nd.edu/user/e/ekissel/repos/Generalizsed_constitutive_model_clean /gcm
+    /home/ezra/repos/pgfem_3d_clean /pgfem_3d
+    /home/ezra/repos/Generalizsed_constitutive_model_clean /gcm
 
 %environment
 
@@ -20,16 +20,16 @@ From: fedora:28
 
 %post
 
-    yum -y install curl openmpi openmpi-devel git paraview cmake cpio libXaw gcc autoconf dh-autoreconf pkgconf gcc-c++ glibc glibc-devel
+    yum -y install curl openmpi openmpi-devel git paraview cmake cpio libXaw gcc autoconf dh-autoreconf pkgconf gcc-c++ glibc glibc-devel libibverbs-devel librdmacm-devel wget
 
     # Fixing shortcomings of Fedora's openmpi-devel package
-    ln -s /usr/lib64/openmpi/bin/mpicc /usr/bin/mpicc
-    ln -s /usr/lib64/openmpi/bin/mpicxx /usr/bin/mpicxx
+    [ ! -f /usr/bin/mpicc ] && ln -s /usr/lib64/openmpi/bin/mpicc /usr/bin/mpicc
+    [ ! -f /usr/bin/mpicxx ] && ln -s /usr/lib64/openmpi/bin/mpicxx /usr/bin/mpicxx
 
     export INTEL_MKL=l_mkl_2018.2.199.tgz
     export SUITESPARSE=SuiteSparse-4.5.5.tar.gz
     export HYPRE=hypre-2.11.2.tar.gz
-    expotr PHOTON=photon-1.1.tar.bz2    
+    export PHOTON=photon-1.1.tar.bz2
 
     # Obtaining necessary software
     curl -O http://kanar.open.sice.indiana.edu/images/$INTEL_MKL
@@ -37,14 +37,10 @@ From: fedora:28
     curl -O http://faculty.cse.tamu.edu/davis/SuiteSparse/$SUITESPARSE
     curl -O https://computation.llnl.gov/projects/hypre-scalable-linear-solvers-multigrid-methods/download/$HYPRE
 
-    git clone -b develop https://github.com/C-SWARM/ttl.git
+    [ ! -d /ttl ] && git clone -b develop https://github.com/C-SWARM/ttl.git
     #git clone -b develop https://github.com/C-SWARM/gcm.git
     #git clone -b develop https://github.com/C-SWARM/pgfem_3d.git
     #git clone -b develop https://github.com/C-SWARM/pgfem-3d-examples.git
-
-    # Installing intel MKL
-    tar -xf $INTEL_MKL
-    ${INTEL_MKL%.*}/install.sh -s ./mkl_silent.cfg
 
     # Building software components and PGFem3D
     bash /build.sh
