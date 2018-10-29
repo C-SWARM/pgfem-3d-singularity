@@ -44,6 +44,19 @@ cd /gcm
 make -j 4
 cd -
 
+echo " ================== "
+echo "| Setting up Photon...|"
+echo " ================== "
+tar -xf $PHOTON
+cd /photon
+./autogen.sh
+./configure --disable-libfabric \
+            --disable-shmem \
+            CXXFLAGS="-O3"
+make -j 4
+make install
+cd -
+
 echo " ====================== "
 echo "| Setting up PGFEM3D...|"
 echo " ====================== "
@@ -54,6 +67,7 @@ cd /pgfem_3d
 	    --with-ttl=$PREFIX/ttl \
             --with-suitesparse=$PREFIX/SuiteSparse \
             --disable-vtk \
+            --enable-photon \
 	    --with-cnstvm=$PREFIX/gcm \
 	    --enable-tests \
 	    --with-tests-nprocs=4 \

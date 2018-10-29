@@ -8,14 +8,15 @@ From: fedora:28
     mkl_silent.cfg /mkl_silent.cfg
 
     # These two will be removed when able to clone from git repos
-    /afs/crc.nd.edu/user/c/ckankel/singularity/cswarm/cswarm/gitlab/pgfem_3d /pgfem_3d
-    /afs/crc.nd.edu/user/c/ckankel/singularity/cswarm/cswarm/gitlab/Generalizsed_constitutive_model /gcm
+    /afs/crc.nd.edu/user/e/ekissel/repos/pgfem_3d_client /pgfem_3d
+    /afs/crc.nd.edu/user/e/ekissel/repos/Generalizsed_constitutive_model_clean /gcm
 
 %environment
 
     INTEL_MKL=l_mkl_2018.2.199.tgz
     SUITESPARSE=SuiteSparse-4.2.2.tar.gz
     HYPRE=hypre-2.11.2.tar.gz
+    PHOTON=photon-1.1.tar.bz2
 
 %post
 
@@ -28,9 +29,11 @@ From: fedora:28
     export INTEL_MKL=l_mkl_2018.2.199.tgz
     export SUITESPARSE=SuiteSparse-4.5.5.tar.gz
     export HYPRE=hypre-2.11.2.tar.gz
-    
+    expotr PHOTON=photon-1.1.tar.bz2    
+
     # Obtaining necessary software
     curl -O http://kanar.open.sice.indiana.edu/images/$INTEL_MKL
+    curl -O http://kanar.open.sice.indiana.edu/images/$PHOTON
     curl -O http://faculty.cse.tamu.edu/davis/SuiteSparse/$SUITESPARSE
     curl -O https://computation.llnl.gov/projects/hypre-scalable-linear-solvers-multigrid-methods/download/$HYPRE
 
