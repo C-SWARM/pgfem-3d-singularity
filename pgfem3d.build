@@ -19,20 +19,18 @@ From: fedora:28
 
 %post
 
-    yum -y install curl openmpi openmpi-devel git paraview cmake cpio libXaw gcc autoconf dh-autoreconf pkgconf gcc-c++ glibc glibc-devel
-
-    # Fixing shortcomings of Fedora's openmpi-devel package
-    ln -s /usr/lib64/openmpi/bin/mpicc /usr/bin/mpicc
-    ln -s /usr/lib64/openmpi/bin/mpicxx /usr/bin/mpicxx
+    dnf -y install curl git paraview cmake cpio libXaw gcc autoconf dh-autoreconf pkgconf gcc-c++ gcc-gfortran glibc glibc-devel libibverbs rdma-core-devel rdma-core infiniband-diags infiniband-diags-devel byacc
 
     export INTEL_MKL=l_mkl_2018.2.199.tgz
     export SUITESPARSE=SuiteSparse-4.5.5.tar.gz
     export HYPRE=hypre-2.11.2.tar.gz
+    export MVAPICH=mvapich2-2.2.tar.gz
     
     # Obtaining necessary software
     curl -O http://kanar.open.sice.indiana.edu/images/$INTEL_MKL
     curl -O http://faculty.cse.tamu.edu/davis/SuiteSparse/$SUITESPARSE
     curl -O https://computation.llnl.gov/projects/hypre-scalable-linear-solvers-multigrid-methods/download/$HYPRE
+    curl -O http://mvapich.cse.ohio-state.edu/download/mvapich/mv2/$MVAPICH
 
     git clone -b develop https://github.com/C-SWARM/ttl.git
     #git clone -b develop https://github.com/C-SWARM/gcm.git
@@ -42,11 +40,20 @@ From: fedora:28
     # Installing intel MKL
     tar -xf $INTEL_MKL
     ${INTEL_MKL%.*}/install.sh -s ./mkl_silent.cfg
+    
+    # Building mvapich. Set this way to be replaced by mvapich on target machine
+    tar -xf $MVAPICH
+    cd ${MVAPICH%.tar.gz}
+    ./configure --prefix=/mvapich --disable-wrapper-rpath
+    make -j 4 install
+    export PATH=$PATH:/mvapich/bin
+    export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/mvapich/lib
+    cd -
 
     # Building software components and PGFem3D
     bash /build.sh
 
-    rm $SUITESPARSE $INTEL_MKL $HYPRE mkl_silent.cfg build.sh
+    rm $SUITESPARSE $INTEL_MKL $HYPRE $MVAPICH mkl_silent.cfg build.sh
 
 %runscript
 

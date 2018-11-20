@@ -57,7 +57,7 @@ cd /pgfem_3d
 	    --with-cnstvm=$PREFIX/gcm \
 	    --enable-tests \
 	    --with-tests-nprocs=4 \
-	    CC=mpicc CXX=mpicxx CXXFLAGS="-O3"
+	    CC=mpicc CXX=mpicxx CXXFLAGS="-O3 -Wno-error=format-overflow"
 
 make -j 4
 make install
