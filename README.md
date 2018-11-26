@@ -21,7 +21,7 @@ Build the container using the build command as super user / root. This can take 
 $ su -
 Password:
 # cd /path/to/this/repo
-# singularity build pgfem3d.simg pgfem3d.build
+# singularity build pgfem3d.simg Singularity
 ```
 Once finished building, the container can be executed to run PGFem_3D, passing in any necessary parameters.
 ```bash
@@ -65,7 +65,7 @@ $ ./run.sh
 
 ## Running with infiniband
 
-By using the host's shared libraries it is possible to utilize infiniband. In order to properly communicate, within the container it is best to build the version of MPI library normally used on the host to communicate over infiband. In the current `pgfem_3d` singularity container, `mvapich2-2.2` is built inside `pgfem3d.build` and configured with `--disable-wrapper-rpath`. This allows the container's `libmpi.so` to be swapped to utilize the host's copy.
+By using the host's shared libraries it is possible to utilize infiniband. In order to properly communicate, within the container it is best to build the version of MPI library normally used on the host to communicate over infiband. In the current `pgfem_3d` singularity container, `mvapich2-2.2` is built inside `Singularity` and configured with `--disable-wrapper-rpath`. This allows the container's `libmpi.so` to be swapped to utilize the host's copy.
 ```bash
 cd ${MVAPICH%.tar.gz}
 ./configure --prefix=/mvapich --disable-wrapper-rpath
