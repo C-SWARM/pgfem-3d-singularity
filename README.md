@@ -63,7 +63,31 @@ $ ./local_makeset.pl -np 4
 $ ./run.sh
 ```
 
-### Help
+## Running with infiniband
+
+By using the host's shared libraries it is possible to utilize infiniband. In order to properly communicate, within the container it is best to build the version of MPI library normally used on the host to communicate over infiband. In the current `pgfem_3d` singularity container, `mvapich2-2.2` is built inside `pgfem3d.build` and configured with `--disable-wrapper-rpath`. This allows the container's `libmpi.so` to be swapped to utilize the host's copy.
+```bash
+cd ${MVAPICH%.tar.gz}
+./configure --prefix=/mvapich --disable-wrapper-rpath
+make -j 4 install
+```
+Once the matching version of MPI is built into the container, `pgfem_3d` can be built using the MPI just compiled. In this repo, it is built within the `build.sh` helper script.
+
+### Library swapping
+
+Once the container is built and transferred over to a host, a job script should be built with the following to pass host libraries and paths into the container. If the container and necessary files to run live in a FS space other than the current user's home space, it will be necessary to pass that along below as well within the `SINGULARITY_BINDPATH` variable. This is an example of a partial script on [Quartz at LLNL](https://hpc.llnl.gov/hardware/platforms/Quartz):
+```bash
+module load mvapich2/2.2
+module load mkl/2018.0
+# Passing dynamic libraries
+export SINGULARITYENV_LD_LIBRARY_PATH=$LD_LIBRARY_PATH
+# Passing FS paths for host MVAPICH and where the container is stored
+export SINGULARITY_BINDPATH="/usr/tce/packages/mvapich2/mvapich2-2.2-gcc-7.1.0/lib,/p/lscratchh/USERNAME"
+cd /p/lscratchh/USERNAME/pgfem-3d-examples
+./run.sh
+```
+
+## Help
 For any technical assistance, please contact:
 
 1.  Cody Kankel [ckankel@nd.edu](mailto:ckankel@nd.edu)
