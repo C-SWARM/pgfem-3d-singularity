@@ -7,10 +7,6 @@ From: fedora:28
     build.sh /build.sh
     mkl_silent.cfg /mkl_silent.cfg
 
-    # These two will be removed when able to clone from git repos
-    /afs/crc.nd.edu/user/c/ckankel/singularity/cswarm/cswarm/gitlab/pgfem_3d /pgfem_3d
-    /afs/crc.nd.edu/user/c/ckankel/singularity/cswarm/cswarm/gitlab/Generalizsed_constitutive_model /gcm
-
 %environment
 
     INTEL_MKL=l_mkl_2018.2.199.tgz
@@ -20,7 +16,7 @@ From: fedora:28
 
 %post
 
-    dnf -y install curl git paraview cmake cpio libXaw gcc autoconf dh-autoreconf pkgconf gcc-c++ gcc-gfortran glibc glibc-devel libibverbs rdma-core-devel rdma-core infiniband-diags infiniband-diags-devel byacc libibverbs-devel librdmacm-devel wget file
+    dnf -y install curl git paraview cmake cpio libXaw gcc autoconf dh-autoreconf pkgconf gcc-c++ gcc-gfortran glibc glibc-devel libibverbs rdma-core-devel rdma-core infiniband-diags infiniband-diags-devel byacc libibverbs-devel librdmacm-devel wget file unzip
 
     export INTEL_MKL=l_mkl_2018.2.199.tgz
     export SUITESPARSE=SuiteSparse-4.5.5.tar.gz
@@ -35,10 +31,13 @@ From: fedora:28
     curl -O http://mvapich.cse.ohio-state.edu/download/mvapich/mv2/$MVAPICH
     curl -Ok https://computation.llnl.gov/projects/hypre-scalable-linear-solvers-multigrid-methods/download/$HYPRE
 
+    # Obtaining PGFem3D and components
+    wget -O pgfem-3d.zip https://github.com/C-SWARM/pgfem-3d/archive/develop.zip
+    unzip pgfem-3d.zip
+    mv /pgfem-3d-develop /pgfem_3d
+
     [ ! -d /ttl ] && git clone -b develop https://github.com/C-SWARM/ttl.git
-    #git clone -b develop https://github.com/C-SWARM/gcm.git
-    #git clone -b develop https://github.com/C-SWARM/pgfem_3d.git
-    #git clone -b develop https://github.com/C-SWARM/pgfem-3d-examples.git
+    [ ! -d /gcm ] && git clone -b develop https://github.com/C-SWARM/gcm.git
 
     tar -xf $MVAPICH
     cd ${MVAPICH%.tar.gz}
@@ -53,7 +52,7 @@ From: fedora:28
     # Building software components and PGFem3D
     bash /build.sh
 
-    rm $SUITESPARSE $INTEL_MKL $HYPRE $MVAPICH mkl_silent.cfg build.sh
+    rm $SUITESPARSE $INTEL_MKL $HYPRE $MVAPICH $PHOTON mkl_silent.cfg build.sh pgfem-3d.zip
 
 %runscript
 
