@@ -12,8 +12,7 @@ This repo contains the build scripts necessary in order build a deployable singu
 
 Clone this directory.
 ```bash 
-# Note this is pre-release, so the following link will NOT work!
-$ git clone https://github.com/C-SWARM/pgfem_3d-singularity.git
+$ git clone https://github.com/C-SWARM/pgfem-3d-singularity.git
 $ cd pgfem_3d-singularity/
 ```
 Build the container using the build command as super user / root. This can take 10-20 minutes depending on machine specs.
