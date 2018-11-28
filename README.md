@@ -10,11 +10,11 @@ This repository contains the build scripts necessary in order build a deployable
 
 ## Obtain the Container
 
-### Option 1: Prebuilt container
+### Option 1: Use prebuilt container
 Through Singularity-Hub, a portable image built from this repository's `Singularity` build specification can be downloaded
 anywhere `singularity` is supported. This container will be matched with the latest change to this repository's
 `Singularity` file. Note that this container has `PGFem_3D` built with MVAPICH2-2.2. If a different version is needed 
-for infiniband support, a custom container must be built following the instructions in [Running with infiniband](#running-with-infiniband).
+for infiniband support, a custom container must be built following the instructions in [Using infiniband](#using-infiniband).
 
 To pull the container:
 ```bash
@@ -72,7 +72,7 @@ export PATH=$PATH:/mvapich/bin
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/mvapich/lib
 ```
 Once the matching version of MPI is built into the container, `pgfem_3d` should be compiled with this version. `pgfem_3d` is 
-built within the `build.sh` helper script. The container can then be built, instrcutions can be found above at [Building the container on own machine](#building-the-container-on-own-machine) 
+built within the `build.sh` helper script. The container can then be built, instrcutions can be found above at [Building the container on own machine](#option-2:-build-the-container-on-own-machine) 
 
 While running on the targeted host, it is necessary to [Swap libraries](#library-swapping) in order to properly utilize infiniband.
 
