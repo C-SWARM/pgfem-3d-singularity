@@ -10,7 +10,7 @@ This repository contains the build scripts necessary in order build a deployable
 
 ## Obtain the Container
 
-### Download prebuilt container from Singularity-Hub
+### Option 1: Prebuilt container
 Through Singularity-Hub, a portable image built from this repository's `Singularity` build specification can be downloaded
 anywhere `singularity` is supported. This container will be matched with the latest change to this repository's
 `Singularity` file. Note that this container has `PGFem_3D` built with MVAPICH2-2.2. If a different version is needed 
@@ -24,18 +24,22 @@ $ mv C-SWARM-pgfem-3d-singularity-master-latest.simg pgfem-3d.simg
 The result from a `singularity pull` will be a container named `C-SWARM-pgfem-3d-singularity-master-latest.simg` due to
 Singularity-Hub naming conventions. It may be best to rename the container to something simple. 
 
-Once the image is pulled, it can executed to run `PGFem_3D` seen in [Executing the Container](#executing-the-container). If an MPI implementation other than `MVAPICH2-2.2` is desired, it is best to build a custom container with the desired MPI. Instructions for building a container are below.
+Once the image is pulled, it can executed to run `PGFem_3D` seen in [Executing the Container](#executing-the-container). 
+If an MPI implementation other than `MVAPICH2-2.2` is desired, it is best to build a custom container with the desired MPI. Instructions for building a container are below.
 
 
-### Building the container on own machine
-This method requires root access to a machine with `singularity` installed. If `mvapich2-2.2` is satisfactory, it is recommended to use the prebuilt image using the instructions above as building a container takes time and space. The following instructions are for building your own container when the `singularity-hub` image will not suffice.
+### Option 2: Build the container on own machine
+This method requires root access to a machine with `singularity` installed. If `mvapich2-2.2` is satisfactory, it is recommended to 
+use the prebuilt image using the instructions above as building a container takes time and space. The following instructions are for
+building your own container when the `singularity-hub` image will not suffice.
 
 Clone this directory.
 ```bash 
 $ git clone https://github.com/C-SWARM/pgfem-3d-singularity.git
 $ cd pgfem-3d-singularity/
 ```
-Make any changes necessary to the `Singularity` build file or the `build.sh` file where each software component will be compiled. Build the container using the `build` command as super user / root. This can take 10-20 minutes depending on machine specs.
+Make any changes necessary to the `Singularity` build file or the `build.sh` file where each software component will be compiled. 
+Build the container using the `build` command as super user / root. This can take 10-20 minutes depending on machine specs.
 A faster build may be achieved by increasing the make workers, replacing `make` with `make -j 4` for example.
 ```console
 $ su -
@@ -53,7 +57,8 @@ By using the host's shared libraries it is possible to utilize infiniband. In or
 the container it is best to build the version of MPI library normally used on the host to communicate over infiniband.
 In the current singularity container defined by the `Singularity` specification file and the hosted on
 `Singularity-Hub`, `mvapich2-2.2` is built and configured with `--disable-wrapper-rpath`. This allows the container's
-`libmpi.so` to be swapped to utilize the host's library. If a targeted cluster requires a different version of MVAPICH or a different implementation of MPI, replace the current download and build of `MVAPICH` 
+`libmpi.so` to be swapped to utilize the host's library. If a targeted cluster requires a different version of MVAPICH 
+or a different implementation of MPI, replace the current download and build of `MVAPICH` 
 with the desired version within the `Singularity` build file. 
 ```bash
 export MVAPICH=mvapich2-2.2.tar.gz
@@ -66,7 +71,8 @@ make -j 4 install
 export PATH=$PATH:/mvapich/bin
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/mvapich/lib
 ```
-Once the matching version of MPI is built into the container, `pgfem_3d` should be compiled with this version. `pgfem_3d` is built within the `build.sh` helper script. The container can then be built, instrcutions can be found above at [Building the container on own machine](#building-the-container-on-own-machine) 
+Once the matching version of MPI is built into the container, `pgfem_3d` should be compiled with this version. `pgfem_3d` is 
+built within the `build.sh` helper script. The container can then be built, instrcutions can be found above at [Building the container on own machine](#building-the-container-on-own-machine) 
 
 While running on the targeted host, it is necessary to [Swap libraries](#library-swapping) in order to properly utilize infiniband.
 
@@ -108,7 +114,9 @@ OPTION_BLK: -[scale]-start [options] input output -[scale]-end
 . . .
 ```
 
-If running on an HPC system, it is best to use `mpirun` or an equivalent _outside_ the container. This would require the proper module or software in place, such as `module load mvapich2/2.2` for example. If you are intending to run using infiniband technologies, see [Using Infiniband](#using-infiniband) above.
+If running on an HPC system, it is best to use `mpirun` or an equivalent _outside_ the container. This would require 
+the proper module or software in place, such as `module load mvapich2/2.2` for example. If you are intending to 
+run using infiniband technologies, see [Using Infiniband](#using-infiniband) above.
 
 
 ## Running pgfem-3d-examples
@@ -132,7 +140,8 @@ From here follow the directions supplied within pgfem-3d-examples:
 $ ./local_makeset.pl -np 4
 $ ./run.sh
 ```
-This will create 2 files within the pgfem-3d-examples directory: `parview_displacement_y.pvsm` and `parview_displacement_z.pvsm`. These files can be opened using `ParaView` outside of the container and examined by the following:
+This will create 2 files within the pgfem-3d-examples directory: `parview_displacement_y.pvsm` and `parview_displacement_z.pvsm`. 
+These files can be opened using `ParaView` outside of the container and examined by the following:
 
 1. Click `File -> Load State -> `, select either parview_displacement_y.pvsm or parview_displacement_z.pvsm and click `OK`
 2. In the next window, browse to: `out -> box_4 -> VTK -> box_../pvtu` and click `OK`
