@@ -5,7 +5,7 @@ This repository contains the build scripts necessary in order build a deployable
 
 ### Requirements
   - Access to a machine with singularity to pull image _or_ root access to a machine to build custom image
-  - Singularity installed as root (tested with 2.5.2, 2.6.0)
+  - Singularity installed as root (tested with 3.5.2)
   - At least 2.3 GB storage to hold resulting container
 
 ## Obtain the Container
