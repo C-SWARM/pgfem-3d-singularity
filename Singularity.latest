@@ -53,7 +53,7 @@ From: fedora:28
     # Building software components and PGFem3D
     bash /build.sh
 
-    rm $SUITESPARSE $INTEL_MKL $HYPRE $MVAPICH $PHOTON mkl_silent.cfg build.sh #pgfem-3d.zip
+    rm $SUITESPARSE $INTEL_MKL $HYPRE $MVAPICH $PHOTON mkl_silent.cfg build.sh pgfem-3d.zip
 
 %runscript
 

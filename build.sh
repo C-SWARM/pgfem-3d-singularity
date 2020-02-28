@@ -27,7 +27,7 @@ echo " ===================="
 tar -xf $HYPRE
 cd ${HYPRE%.tar.gz}/src
 ./configure --prefix=$PREFIX/hypre --with-MPI CC=mpicc CXX=mpicxx
-make -j 12 
+make -j 2 
 make install
 cd -
 
@@ -36,7 +36,7 @@ echo "| Setting up TTL...|"
 echo " ================== "
 cd /ttl
 cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$PREFIX/ttl -DBLA_VENDOR=Intel10_64lp_seq .
-make -j 12 
+make -j 2 
 make install
 cd -
 
@@ -48,7 +48,7 @@ cd /gcm
 ./configure --with-ttl=$PREFIX/ttl \
             --with-mkl=$PREFIX/intel/mkl \
             CXXFLAGS="-O3"
-make -j 12 
+make -j 2 
 cd -
 
 echo " ================== "
@@ -60,16 +60,16 @@ cd /${PHOTON%.tar.bz2}
 ./configure --enable-mpi \
             --disable-shmem \
             CC=mpicc CXX=mpicxx CXXFLAGS="-O3"
-make -j 12 
+make -j 2 
 make install
 cd -
 
 echo " ====================== "
 echo "| Setting up PGFEM3D...|"
 echo " ====================== "
-cd /pgfem-3d
+cd /pgfem_3d
 ./bootstrap
-./configure --prefix=$PREFIX/pgfem-3d/deploy/ \
+./configure --prefix=$PREFIX/pgfem_3d/deploy/ \
 	    --with-hypre=$PREFIX/hypre \
 	    --with-ttl=$PREFIX/ttl \
             --with-suitesparse=$PREFIX/SuiteSparse \
@@ -82,6 +82,6 @@ cd /pgfem-3d
 	    CC=mpicc CXX=mpicxx CXXFLAGS="-O3 -Wno-uninitialized -Wno-error=format-overflow" \
             PKG_CONFIG_PATH=/usr/local/lib/pkgconfig
 
-make -j 12 
+make -j 2 
 make install
 cd -
